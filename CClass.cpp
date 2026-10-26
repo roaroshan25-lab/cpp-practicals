@@ -1,11 +1,33 @@
-class Solution {
+#include <iostream>
+using namespace std;
+class Student
+{
+private:
+    int rollNo;
+    string name;
 public:
-    int strStr(string haystack, string needle) {
-        size_t index = haystack.find(needle);
-
-        if (index == string::npos)
-            return -1;
-
-        return index;
+    // Constructor
+    Student(int r, string n)
+    {
+        rollNo = r;	
+        name = n;
+        cout << "Student object created" << endl;
+    }
+    // Member function
+    void display()
+    {
+        cout << "Roll Number: " << rollNo << endl;
+        cout << "Name: " << name << endl;
+    }
+    // Destructor
+    ~Student()
+    {
+        cout << "Student object destroyed" << endl;
     }
 };
+int main()
+{
+    Student s1(101, "Arun");
+    s1.display();
+    return 0;
+}
