@@ -1,1 +1,14 @@
 
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" rx="35" fill="#10243e"/>
+  <path d="M35 145 L75 105 L105 125 L165 55"
+        fill="none" stroke="#13c6a0" stroke-width="12"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M130 55 H165 V90"
+        fill="none" stroke="#13c6a0" stroke-width="12"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="35" y="155" width="22" height="20" fill="#2789e8"/>
+  <rect x="75" y="135" width="22" height="40" fill="#2789e8"/>
+  <rect x="115" y="145" width="22" height="30" fill="#13c6a0"/>
+</svg>
