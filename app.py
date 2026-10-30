@@ -42,6 +42,7 @@ div[data-testid="stDataFrame"] { width: 100%; }
 }
 </style>
 """, unsafe_allow_html=True)
+
 # =========================================================
 # 3. CONSTANTS AND SESSION STATE
 # =========================================================
@@ -120,7 +121,8 @@ def get_stock_data(symbol, period):
         return df
     except Exception:
         return None
-        # =========================================================
+
+# =========================================================
 # 6. TECHNICAL INDICATORS
 # =========================================================
 def calculate_rsi(series, period=14):
@@ -205,7 +207,8 @@ def analyse_stock(symbol, raw_df):
         category = "Mixed conditions"
     else:
         category = "Weak research conditions"
-        def safe_round(value, digits=2):
+
+    def safe_round(value, digits=2):
         return round(float(value), digits) if pd.notna(value) else np.nan
 
     result = {
@@ -308,8 +311,9 @@ if page == "Home":
         "3. Run the analysis and review the results.\n"
         "4. Use Stock Comparison to compare historical percentage changes.\n"
         "5. Explore Market Analysis and Risk Analysis."
-)
-    # =========================================================
+    )
+
+# =========================================================
 # 9. STOCK SCANNER
 # =========================================================
 elif page == "Stock Scanner":
@@ -361,7 +365,7 @@ elif page == "Stock Scanner":
                 st.session_state["scanner_results"] = result_df
                 st.session_state["chart_data"] = chart_data
                 st.success(f"Completed analysis for {len(results)} stock(s).")
-            else:
+                else:
                 st.error(
                     "No stock could be analysed. Check the symbols and try again."
                 )
@@ -384,7 +388,8 @@ elif page == "Stock Scanner":
             "Research scores are simple rule-based summaries of historical "
             "indicators. They are not AI predictions or buy/sell signals."
         )
-        # =========================================================
+
+# =========================================================
 # 10. MARKET ANALYSIS
 # =========================================================
 elif page == "Market Analysis":
@@ -566,7 +571,8 @@ elif page == "Stock Comparison":
                         "Historical comparisons do not indicate which stock will "
                         "perform better in the future."
                     )
-                    # =========================================================
+
+# =========================================================
 # 13. WATCHLIST
 # =========================================================
 elif page == "Watchlist":
@@ -662,9 +668,8 @@ elif page == "About":
         "- **Risk Analysis:** Historical volatility and drawdown.\n"
         "- **Stock Comparison:** Normalised historical performance comparison.\n"
         "- **Watchlist:** Session-based saved stock symbols."
-    )
-
-    st.subheader("How the indicators are calculated")
+                )
+                    st.subheader("How the indicators are calculated")
     st.markdown(
         "- **SMA 20 / SMA 50:** Average closing price over 20 / 50 sessions.\n"
         "- **RSI:** Momentum indicator calculated from average gains and losses.\n"
@@ -712,3 +717,4 @@ st.caption(
     "© MarketMind AI | Educational Historical Market Research | "
     "Data availability may vary."
         )
+    
