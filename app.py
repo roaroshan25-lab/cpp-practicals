@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # ==========================================
-# 1. PAGE CONFIG
+# 1. PAGE CONFIGURATION
 # ==========================================
 
 st.set_page_config(
@@ -16,9 +16,8 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. DESIGN
+# 2. WEBSITE DESIGN
 # ==========================================
-
 
 st.markdown("""
 <style>
@@ -60,25 +59,17 @@ h2, h3 {
     color: white;
     border-radius: 8px;
 }
-
 </style>
 """, unsafe_allow_html=True)
-
 
 # ==========================================
 # 3. SIDEBAR NAVIGATION
 # ==========================================
 
-# MarketMind AI branding
-
 st.sidebar.title("📈 MarketMind AI")
 st.sidebar.caption("Stock Research Platform")
+st.sidebar.divider()
 
-st.sidebar.title("MarketMind AI")
-
-st.sidebar.caption(
-    "Stock Research Platform"
-)
 page = st.sidebar.radio(
     "Navigation",
     [
@@ -91,13 +82,10 @@ page = st.sidebar.radio(
 )
 
 st.sidebar.divider()
-
-st.sidebar.caption(
-    "Educational market research only."
-)
+st.sidebar.caption("Educational market research only.")
 
 # ==========================================
-# 4. DATA DOWNLOAD
+# 4. STOCK DATA DOWNLOAD
 # ==========================================
 
 @st.cache_data(ttl=900)
@@ -131,7 +119,7 @@ def get_stock_data(symbol, period):
     return df
 
 # ==========================================
-# 5. RSI
+# 5. RSI CALCULATION
 # ==========================================
 
 def calculate_rsi(series, period=14):
@@ -209,6 +197,8 @@ def analyse_stock(symbol, df):
 
     max_drawdown = float(drawdown.min())
 
+    # Educational rule-based research score
+
     score = 0
 
     if price > sma20:
@@ -254,7 +244,7 @@ def analyse_stock(symbol, df):
     return result, df
 
 # ==========================================
-# 7. COMMON HEADER
+# 7. WEBSITE HEADER
 # ==========================================
 
 st.title("📈 MarketMind AI")
@@ -278,45 +268,51 @@ if page == "Home":
         "stock market behaviour."
     )
 
-    
-col1, col2, col3 = st.columns(3)
+    # Three professional feature cards
 
-with col1:
-    with st.container(border=True):
-        st.subheader("📊 Stock Scanner")
-        st.write("Analyse multiple NSE stocks.")
-        st.caption("Compare research indicators.")
+    col1, col2, col3 = st.columns(3)
 
-with col2:
-    with st.container(border=True):
-        st.subheader("📈 Technical Analysis")
-        st.write("Explore SMA, RSI and momentum.")
-        st.caption("Understand historical trends.")
+    with col1:
+        with st.container(border=True):
+            st.subheader("📊 Stock Scanner")
+            st.write("Analyse multiple NSE stocks.")
+            st.caption("Compare research indicators.")
 
-with col3:
-    with st.container(border=True):
-        st.subheader("🛡️ Risk Analysis")
-        st.write("Study volatility and drawdowns.")
-        st.caption("Explore historical market risk.")
-        
+    with col2:
+        with st.container(border=True):
+            st.subheader("📈 Technical Analysis")
+            st.write("Explore SMA, RSI and momentum.")
+            st.caption("Understand historical trends.")
+
+    with col3:
+        with st.container(border=True):
+            st.subheader("🛡️ Risk Analysis")
+            st.write("Study volatility and drawdowns.")
+            st.caption("Explore historical market risk.")
+
     st.divider()
+
+    st.header("Explore Our Features")
+
+    st.markdown("""
+    - **Stock Scanner:** Compare multiple stocks.
+    - **Technical Analysis:** Study price trends.
+    - **Risk Analysis:** Understand historical risk.
+    - **Market Analysis:** Explore stock charts.
+    """)
 
     st.subheader("How to use MarketMind AI")
 
     st.markdown("""
     1. Open Stock Scanner.
     2. Enter NSE stock symbols.
-    3. Choose a historical data period.
+    3. Select a historical period.
     4. Run the analysis.
-    5. Explore the results and risk charts.
+    5. Explore the charts and results.
     """)
 
-    st.caption(
-        "Historical indicators do not guarantee future performance."
-    )
-
 # ==========================================
-# 9. STOCK SCANNER PAGE
+# 9. STOCK SCANNER
 # ==========================================
 
 elif page == "Stock Scanner":
@@ -347,49 +343,58 @@ elif page == "Stock Scanner":
             if x.strip()
         ))
 
-        results = []
-        chart_data = {}
-
-        progress = st.progress(0)
-
-        for i, symbol in enumerate(symbols):
-
-            try:
-                df = get_stock_data(symbol, period)
-
-                if df is not None:
-
-                    result, processed = analyse_stock(
-                        symbol, df
-                    )
-
-                    results.append(result)
-                    chart_data[symbol] = processed
-
-                else:
-                    st.warning(f"No sufficient data for {symbol}")
-
-            except Exception:
-                st.warning(f"Could not analyse {symbol}")
-
-            progress.progress((i + 1) / len(symbols))
-
-        if results:
-
-            result_df = pd.DataFrame(results)
-
-            result_df = result_df.sort_values(
-                "Research Score",
-                ascending=False
-            )
-
-            st.session_state["results"] = result_df
-            st.session_state["chart_data"] = chart_data
-
-            st.success("Analysis completed!")
+        if not symbols:
+            st.error("Please enter at least one stock symbol.")
 
         else:
-            st.error("No stock data could be analysed.")
+
+            results = []
+            chart_data = {}
+
+            progress = st.progress(0)
+
+            for i, symbol in enumerate(symbols):
+
+                try:
+                    df = get_stock_data(symbol, period)
+
+                    if df is not None:
+
+                        result, processed = analyse_stock(
+                            symbol, df
+                        )
+
+                        results.append(result)
+                        chart_data[symbol] = processed
+
+                    else:
+                        st.warning(
+                            f"Insufficient data for {symbol}"
+                        )
+
+                except Exception:
+                    st.warning(
+                        f"Could not analyse {symbol}"
+                    )
+
+                progress.progress((i + 1) / len(symbols))
+
+            if results:
+
+                result_df = pd.DataFrame(results)
+
+                result_df = result_df.sort_values(
+                    "Research Score",
+                    ascending=False
+                )
+
+                st.session_state["results"] = result_df
+                st.session_state["chart_data"] = chart_data
+
+                st.success("Analysis completed!")
+
+            else:
+                st.error("No stock data could be analysed.")
 
     if "results" in st.session_state:
 
@@ -418,7 +423,7 @@ elif page == "Stock Scanner":
         )
 
 # ==========================================
-# 10. MARKET ANALYSIS PAGE
+# 10. MARKET ANALYSIS
 # ==========================================
 
 elif page == "Market Analysis":
@@ -478,11 +483,10 @@ elif page == "Market Analysis":
         plt.close(fig)
 
         st.subheader("RSI History")
-
         st.line_chart(df["RSI"])
 
 # ==========================================
-# 11. RISK ANALYSIS PAGE
+# 11. RISK ANALYSIS
 # ==========================================
 
 elif page == "Risk Analysis":
@@ -534,12 +538,11 @@ elif page == "Risk Analysis":
         )
 
         st.subheader("Historical Drawdown")
-
         st.line_chart(drawdown)
 
         st.caption(
-            "Historical risk measurements are not guarantees "
-            "of future risk."
+            "Historical risk measurements do not guarantee "
+            "future performance."
         )
 
 # ==========================================
@@ -555,7 +558,9 @@ elif page == "About":
     and market analysis platform.
 
     It uses historical market data to demonstrate:
+    """)
 
+    st.markdown("""
     - Moving averages
     - Relative Strength Index (RSI)
     - Price momentum
