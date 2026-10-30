@@ -4,11 +4,10 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from datetime import datetime
 
-# ==================================================
-# 1. PAGE CONFIGURATION
-# ==================================================
+# ==========================================
+# 1. PAGE CONFIG
+# ==========================================
 
 st.set_page_config(
     page_title="MarketMind AI",
@@ -16,133 +15,40 @@ st.set_page_config(
     layout="wide"
 )
 
-# ==================================================
-# 2. CUSTOM WEBSITE DESIGN
-# ==================================================
+# ==========================================
+# 2. DESIGN
+# ==========================================
 
 st.markdown("""
 <style>
-.main {
+.stApp {
     background-color: #f5f7fb;
 }
-
 .block-container {
     padding-top: 2rem;
+    max-width: 1200px;
 }
-
 h1 {
     color: #12345a;
 }
-
 h2, h3 {
     color: #234b70;
 }
-
 .stMetric {
-    background-color: white;
+    background: white;
     padding: 15px;
     border-radius: 12px;
     border: 1px solid #e1e8f0;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
-# ==================================================
-# 3. WEBSITE HEADER
-# ==================================================
-
-st.title("📈 MarketMind AI")
-
-st.subheader("Stock Research & Market Analysis")
-
-st.write(
-    "Explore historical stock prices, technical indicators, "
-    "market momentum and risk analysis in one place."
-)
-
-st.info(
-    "MarketMind AI is an educational research platform. "
-    "It does not provide guaranteed predictions or "
-    "personalised investment advice."
-)
-
-st.divider()
-
-# ==================================================
-# 4. PROFESSIONAL HOMEPAGE
-# ==================================================
-
-st.header("Welcome to MarketMind AI")
-
-st.write(
-    "Understand market behaviour using historical stock data "
-    "and technical research tools."
-)
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("### 📊 Stock Scanner")
-    st.write("Analyse multiple NSE stocks.")
-
-with col2:
-    st.markdown("### 📈 Technical Analysis")
-    st.write("Explore SMA, RSI and momentum.")
-
-with col3:
-    st.markdown("### 🛡️ Risk Analysis")
-    st.write("Study volatility and historical losses.")
-
-st.divider()
-
-st.subheader("Explore Our Features")
-
-st.markdown("""
-- **Stock Scanner:** Analyse selected NSE stocks.
-- **Technical Indicators:** Study SMA 20, SMA 50 and RSI.
-- **Momentum Analysis:** Explore historical price movement.
-- **Risk Analysis:** Examine volatility and drawdowns.
-- **Research Reports:** Download analysis as CSV files.
-""")
-
-st.divider()
-
-# ==================================================
-# 5. SIDEBAR SETTINGS
-# ==================================================
+# ==========================================
+# 3. SIDEBAR NAVIGATION
+# ==========================================
 
 st.sidebar.title("📈 MarketMind AI")
-
-st.sidebar.subheader("Stock Scanner Settings")
-
-default_stocks = (
-    "RELIANCE.NS,TCS.NS,INFY.NS,"
-    "HDFCBANK.NS,ICICIBANK.NS,SBIN.NS"
-)
-
-stock_input = st.sidebar.text_area(
-    "Enter NSE stock symbols separated by commas",
-    default_stocks
-)
-
-period = st.sidebar.selectbox(
-    "Historical data period",
-    ["6mo", "1y", "2y", "5y"],
-    index=2
-)
-
-st.sidebar.caption(
-    "Data is historical and may be delayed."
-)
-
-run_scan = st.sidebar.button(
-    "🔍 Run Stock Analysis",
-    use_container_width=True
-)
-# ---------------- NAVIGATION ----------------
-
-st.sidebar.title("MarketMind AI")
+st.sidebar.caption("Stock Research Platform")
 
 page = st.sidebar.radio(
     "Navigation",
@@ -155,16 +61,22 @@ page = st.sidebar.radio(
     ]
 )
 
-# ==================================================
-# 6. DOWNLOAD STOCK DATA
-# ==================================================
+st.sidebar.divider()
+
+st.sidebar.caption(
+    "Educational market research only."
+)
+
+# ==========================================
+# 4. DATA DOWNLOAD
+# ==========================================
 
 @st.cache_data(ttl=900)
-def get_stock_data(symbol, selected_period):
+def get_stock_data(symbol, period):
 
     df = yf.download(
         symbol,
-        period=selected_period,
+        period=period,
         interval="1d",
         auto_adjust=True,
         progress=False
@@ -182,7 +94,6 @@ def get_stock_data(symbol, selected_period):
         return None
 
     df = df[required].copy()
-
     df = df.dropna(subset=["Close"])
 
     if len(df) < 50:
@@ -190,16 +101,15 @@ def get_stock_data(symbol, selected_period):
 
     return df
 
-# ==================================================
-# 7. RSI CALCULATION
-# ==================================================
+# ==========================================
+# 5. RSI
+# ==========================================
 
 def calculate_rsi(series, period=14):
 
     delta = series.diff()
 
     gain = delta.clip(lower=0)
-
     loss = -delta.clip(upper=0)
 
     avg_gain = gain.ewm(
@@ -216,26 +126,21 @@ def calculate_rsi(series, period=14):
 
     rs = avg_gain / avg_loss.replace(0, np.nan)
 
-    rsi = 100 - (100 / (1 + rs))
+    return 100 - (100 / (1 + rs))
 
-    return rsi
-
-# ==================================================
-# 8. STOCK ANALYSIS
-# ==================================================
+# ==========================================
+# 6. STOCK ANALYSIS
+# ==========================================
 
 def analyse_stock(symbol, df):
 
     df = df.copy()
 
     close = df["Close"]
-
     volume = df["Volume"]
 
     df["SMA20"] = close.rolling(20).mean()
-
     df["SMA50"] = close.rolling(50).mean()
-
     df["RSI"] = calculate_rsi(close)
 
     df["Daily_Return"] = close.pct_change()
@@ -249,17 +154,12 @@ def analyse_stock(symbol, df):
     latest = df.iloc[-1]
 
     price = float(latest["Close"])
-
     sma20 = float(latest["SMA20"])
-
     sma50 = float(latest["SMA50"])
-
     rsi = float(latest["RSI"])
-
     momentum = float(latest["Momentum20"])
 
     volume_average = float(latest["Volume_Average"])
-
     current_volume = float(latest["Volume"])
 
     volume_ratio = (
@@ -280,8 +180,6 @@ def analyse_stock(symbol, df):
 
     max_drawdown = float(drawdown.min())
 
-    # Research score out of 100
-
     score = 0
 
     if price > sma20:
@@ -301,13 +199,10 @@ def analyse_stock(symbol, df):
 
     if score >= 80:
         category = "Strong research conditions"
-
     elif score >= 60:
         category = "Positive research conditions"
-
     elif score >= 40:
         category = "Mixed conditions"
-
     else:
         category = "Weak research conditions"
 
@@ -317,75 +212,131 @@ def analyse_stock(symbol, df):
         "SMA20": round(sma20, 2),
         "SMA50": round(sma50, 2),
         "RSI": round(rsi, 2),
-        "20D Momentum %": round(momentum, 2),
+        "Momentum %": round(momentum, 2),
         "Volume Ratio": round(volume_ratio, 2)
             if pd.notna(volume_ratio) else np.nan,
         "Volatility %": round(volatility, 2),
         "Max Drawdown %": round(max_drawdown, 2),
         "Research Score": score,
-        "Research Category": category,
+        "Category": category,
         "Latest Data Date": df.index[-1].strftime("%d %b %Y")
     }
 
     return result, df
 
-# ==================================================
-# 9. RUN STOCK SCANNER
-# ==================================================
+# ==========================================
+# 7. COMMON HEADER
+# ==========================================
 
-if run_scan:
+st.title("📈 MarketMind AI")
+st.caption("Stock Research & Market Analysis")
 
-    symbols = list(dict.fromkeys(
-        symbol.strip().upper()
-        for symbol in stock_input.split(",")
-        if symbol.strip()
-    ))
+# ==========================================
+# 8. HOME PAGE
+# ==========================================
 
-    if not symbols:
+if page == "Home":
 
-        st.warning("Please enter stock symbols.")
+    st.header("Welcome to MarketMind AI")
 
-    else:
+    st.write(
+        "Explore historical stock prices, technical indicators, "
+        "market momentum and risk analysis in one place."
+    )
+
+    st.info(
+        "An educational platform for understanding "
+        "stock market behaviour."
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.subheader("📊 Stock Scanner")
+        st.write("Analyse multiple NSE stocks.")
+
+    with col2:
+        st.subheader("📈 Technical Analysis")
+        st.write("Explore SMA, RSI and momentum.")
+
+    with col3:
+        st.subheader("🛡️ Risk Analysis")
+        st.write("Study volatility and drawdowns.")
+
+    st.divider()
+
+    st.subheader("How to use MarketMind AI")
+
+    st.markdown("""
+    1. Open Stock Scanner.
+    2. Enter NSE stock symbols.
+    3. Choose a historical data period.
+    4. Run the analysis.
+    5. Explore the results and risk charts.
+    """)
+
+    st.caption(
+        "Historical indicators do not guarantee future performance."
+    )
+
+# ==========================================
+# 9. STOCK SCANNER PAGE
+# ==========================================
+
+elif page == "Stock Scanner":
+
+    st.header("🔍 NSE Stock Scanner")
+
+    default_stocks = (
+        "RELIANCE.NS,TCS.NS,INFY.NS,"
+        "HDFCBANK.NS,ICICIBANK.NS,SBIN.NS"
+    )
+
+    stock_input = st.text_area(
+        "Enter stock symbols separated by commas",
+        default_stocks
+    )
+
+    period = st.selectbox(
+        "Historical data period",
+        ["6mo", "1y", "2y", "5y"],
+        index=2
+    )
+
+    if st.button("Run Stock Analysis"):
+
+        symbols = list(dict.fromkeys(
+            x.strip().upper()
+            for x in stock_input.split(",")
+            if x.strip()
+        ))
 
         results = []
-
         chart_data = {}
 
         progress = st.progress(0)
 
-        for index, symbol in enumerate(symbols):
+        for i, symbol in enumerate(symbols):
 
             try:
+                df = get_stock_data(symbol, period)
 
-                with st.spinner(f"Analysing {symbol}..."):
+                if df is not None:
 
-                    df = get_stock_data(symbol, period)
+                    result, processed = analyse_stock(
+                        symbol, df
+                    )
 
-                    if df is not None:
+                    results.append(result)
+                    chart_data[symbol] = processed
 
-                        analysis, processed_df = analyse_stock(
-                            symbol, df
-                        )
+                else:
+                    st.warning(f"No sufficient data for {symbol}")
 
-                        results.append(analysis)
+            except Exception:
+                st.warning(f"Could not analyse {symbol}")
 
-                        chart_data[symbol] = processed_df
-
-                    else:
-
-                        st.warning(
-                            f"Insufficient data for {symbol}."
-                        )
-
-            except Exception as error:
-
-                st.warning(
-                    f"Could not analyse {symbol}: {error}"
-                )
-
-            progress.progress(
-                (index + 1) / len(symbols)
-            )
+            progress.progress((i + 1) / len(symbols))
 
         if results:
 
@@ -397,205 +348,209 @@ if run_scan:
             )
 
             st.session_state["results"] = result_df
-
             st.session_state["chart_data"] = chart_data
 
+            st.success("Analysis completed!")
+
         else:
+            st.error("No stock data could be analysed.")
 
-            st.error("No usable stock data was returned.")
+    if "results" in st.session_state:
 
-# ==================================================
-# 10. DISPLAY STOCK RESULTS
-# ==================================================
+        results = st.session_state["results"]
 
-if "results" in st.session_state:
+        st.subheader("Stock Research Results")
 
-    results = st.session_state["results"]
+        st.dataframe(
+            results,
+            use_container_width=True,
+            hide_index=True
+        )
 
-    chart_data = st.session_state["chart_data"]
+        csv = results.to_csv(index=False).encode("utf-8")
 
-    st.header("📊 Stock Research Results")
+        st.download_button(
+            "Download CSV Report",
+            csv,
+            "marketmind_report.csv",
+            "text/csv"
+        )
 
-    st.write(
-        "Stocks are ranked by the technical research score."
-    )
+        st.caption(
+            "Research scores are rule-based indicators, "
+            "not predictions or buy recommendations."
+        )
 
-    st.dataframe(
-        results,
-        use_container_width=True,
-        hide_index=True
-    )
+# ==========================================
+# 10. MARKET ANALYSIS PAGE
+# ==========================================
 
-    st.caption(
-        "Scores represent historical technical conditions. "
-        "They are not forecasts or buy recommendations."
-    )
+elif page == "Market Analysis":
 
-    # ==================================================
-    # 11. DOWNLOAD CSV REPORT
-    # ==================================================
+    st.header("📊 Market Analysis")
 
-    csv = results.to_csv(
-        index=False
-    ).encode("utf-8")
+    if "chart_data" not in st.session_state:
 
-    st.download_button(
-        "⬇️ Download Research Report",
-        data=csv,
-        file_name="marketmind_research_report.csv",
-        mime="text/csv"
-    )
+        st.info(
+            "First run Stock Analysis from the Stock Scanner page."
+        )
 
-    # ==================================================
-    # 12. RESEARCH CATEGORY CHART
-    # ==================================================
+    else:
 
-    st.subheader("Research Category Overview")
+        chart_data = st.session_state["chart_data"]
 
-    counts = results["Research Category"].value_counts()
+        selected = st.selectbox(
+            "Select stock",
+            list(chart_data.keys())
+        )
 
-    st.bar_chart(counts)
+        df = chart_data[selected]
 
-    # ==================================================
-    # 13. INDIVIDUAL STOCK ANALYSIS
-    # ==================================================
+        latest = df.iloc[-1]
 
-    st.subheader("🔎 Individual Stock Analysis")
+        col1, col2, col3 = st.columns(3)
 
-    selected_stock = st.selectbox(
-        "Select a stock",
-        results["Stock"].tolist()
-    )
-
-    selected_df = chart_data[selected_stock]
-
-    latest = selected_df.iloc[-1]
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-
-        st.metric(
+        col1.metric(
             "Latest Price",
             f"₹{latest['Close']:,.2f}"
         )
 
-    with col2:
-
-        st.metric(
+        col2.metric(
             "RSI",
             f"{latest['RSI']:.2f}"
         )
 
-    with col3:
-
-        st.metric(
+        col3.metric(
             "20-Day Momentum",
             f"{latest['Momentum20']:.2f}%"
         )
 
-    # ==================================================
-    # 14. HISTORICAL PRICE CHART
-    # ==================================================
+        st.subheader("Historical Price and Moving Averages")
 
-    st.subheader("Historical Price Chart")
+        fig, ax = plt.subplots(figsize=(12, 5))
 
-    fig, ax = plt.subplots(figsize=(12, 5))
+        ax.plot(df.index, df["Close"], label="Close")
+        ax.plot(df.index, df["SMA20"], label="SMA 20")
+        ax.plot(df.index, df["SMA50"], label="SMA 50")
 
-    ax.plot(
-        selected_df.index,
-        selected_df["Close"],
-        label="Closing Price"
-    )
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Adjusted Price (₹)")
+        ax.legend()
+        ax.grid(True)
 
-    ax.plot(
-        selected_df.index,
-        selected_df["SMA20"],
-        label="SMA 20"
-    )
+        st.pyplot(fig)
+        plt.close(fig)
 
-    ax.plot(
-        selected_df.index,
-        selected_df["SMA50"],
-        label="SMA 50"
-    )
+        st.subheader("RSI History")
 
-    ax.set_xlabel("Date")
+        st.line_chart(df["RSI"])
 
-    ax.set_ylabel("Adjusted Price (₹)")
+# ==========================================
+# 11. RISK ANALYSIS PAGE
+# ==========================================
 
-    ax.legend()
+elif page == "Risk Analysis":
 
-    ax.grid(True)
+    st.header("🛡️ Historical Risk Analysis")
 
-    st.pyplot(fig)
+    if "chart_data" not in st.session_state:
 
-    plt.close(fig)
+        st.info(
+            "First run Stock Analysis from the Stock Scanner page."
+        )
 
-    # ==================================================
-    # 15. HISTORICAL PERFORMANCE
-    # ==================================================
+    else:
 
-    st.subheader("Historical Performance")
+        chart_data = st.session_state["chart_data"]
 
-    daily_returns = (
-        selected_df["Close"].pct_change().dropna()
-    )
+        selected = st.selectbox(
+            "Select stock for risk analysis",
+            list(chart_data.keys())
+        )
 
-    cumulative_returns = (
-        (1 + daily_returns).cumprod() - 1
-    ) * 100
+        df = chart_data[selected]
 
-    st.line_chart(cumulative_returns)
+        daily_returns = df["Close"].pct_change().dropna()
 
-    st.caption(
-        "This chart shows historical cumulative returns, "
-        "not expected future returns."
-    )
+        volatility = (
+            daily_returns.tail(30).std()
+            * np.sqrt(252) * 100
+        )
 
-    # ==================================================
-    # 16. RISK ANALYSIS
-    # ==================================================
+        rolling_peak = df["Close"].cummax()
 
-    st.subheader("🛡️ Historical Risk Analysis")
+        drawdown = (
+            df["Close"] / rolling_peak - 1
+        ) * 100
 
-    rolling_peak = selected_df["Close"].cummax()
+        max_drawdown = drawdown.min()
 
-    drawdown = (
-        selected_df["Close"] / rolling_peak - 1
-    ) * 100
+        col1, col2 = st.columns(2)
 
-    st.line_chart(drawdown)
+        col1.metric(
+            "Annualised Historical Volatility",
+            f"{volatility:.2f}%"
+        )
 
-    st.caption(
-        "Drawdown shows the historical decline from "
-        "a previous peak."
-    )
+        col2.metric(
+            "Maximum Historical Drawdown",
+            f"{max_drawdown:.2f}%"
+        )
 
-# ==================================================
-# 17. WEBSITE FOOTER
-# ==================================================
+        st.subheader("Historical Drawdown")
+
+        st.line_chart(drawdown)
+
+        st.caption(
+            "Historical risk measurements are not guarantees "
+            "of future risk."
+        )
+
+# ==========================================
+# 12. ABOUT PAGE
+# ==========================================
+
+elif page == "About":
+
+    st.header("About MarketMind AI")
+
+    st.write("""
+    MarketMind AI is an educational stock research
+    and market analysis platform.
+
+    It uses historical market data to demonstrate:
+
+    - Moving averages
+    - Relative Strength Index (RSI)
+    - Price momentum
+    - Volume analysis
+    - Historical volatility
+    - Maximum drawdown
+    """)
+
+    st.subheader("Data Source")
+
+    st.write("Yahoo Finance historical market data.")
+
+    st.subheader("Disclaimer")
+
+    st.warning("""
+    This platform is for educational purposes only.
+
+    It does not provide personalised financial advice,
+    guaranteed stock predictions or instructions to
+    purchase securities.
+
+    Historical performance does not guarantee future results.
+    Market data may be delayed or incomplete.
+    """)
+
+# ==========================================
+# 13. FOOTER
+# ==========================================
 
 st.divider()
 
-st.markdown("""
-### About MarketMind AI
-
-MarketMind AI is an educational stock research
-and market analysis platform.
-
-It helps users explore historical prices,
-technical indicators, momentum and risk.
-
-**Disclaimer:** This platform does not provide
-personalised financial advice, guaranteed predictions
-or instructions to purchase securities.
-
-Historical performance does not guarantee future results.
-Market data may be delayed or incomplete.
-""")
-
 st.caption(
-    "MarketMind AI | Educational Market Research | "
-    + datetime.now().strftime("%Y")
+    "© MarketMind AI | Educational Market Research"
 )
