@@ -278,20 +278,27 @@ if page == "Home":
         "stock market behaviour."
     )
 
-    col1, col2, col3 = st.columns(3)
+    
+col1, col2, col3 = st.columns(3)
 
-    with col1:
+with col1:
+    with st.container(border=True):
         st.subheader("📊 Stock Scanner")
         st.write("Analyse multiple NSE stocks.")
+        st.caption("Compare research indicators.")
 
-    with col2:
+with col2:
+    with st.container(border=True):
         st.subheader("📈 Technical Analysis")
         st.write("Explore SMA, RSI and momentum.")
+        st.caption("Understand historical trends.")
 
-    with col3:
+with col3:
+    with st.container(border=True):
         st.subheader("🛡️ Risk Analysis")
         st.write("Study volatility and drawdowns.")
-
+        st.caption("Explore historical market risk.")
+        
     st.divider()
 
     st.subheader("How to use MarketMind AI")
