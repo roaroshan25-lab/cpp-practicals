@@ -113,7 +113,7 @@ def get_stock_data(symbol, period):
     df = df[required].copy()
     df = df.dropna(subset=["Close"])
 
-    if len(df) < 50:
+    if len(df) < 2:
         return None
 
     return df
@@ -197,8 +197,6 @@ def analyse_stock(symbol, df):
 
     max_drawdown = float(drawdown.min())
 
-    # Educational rule-based research score
-
     score = 0
 
     if price > sma20:
@@ -268,23 +266,86 @@ if page == "Home":
         "stock market behaviour."
     )
 
-    # Three professional feature cards
+    # NIFTY 50 MARKET OVERVIEW
+
+    st.divider()
+    st.subheader("📊 Nifty 50 Market Overview")
+
+    try:
+
+        nifty = get_stock_data("^NSEI", "1y")
+
+        if nifty is not None:
+
+            latest_price = float(nifty["Close"].iloc[-1])
+            previous_price = float(nifty["Close"].iloc[-2])
+
+            daily_change = (
+                (latest_price - previous_price)
+                / previous_price
+            ) * 100
+
+            yearly_high = float(nifty["High"].max())
+            yearly_low = float(nifty["Low"].min())
+
+            col_a, col_b, col_c, col_d = st.columns(4)
+
+            col_a.metric(
+                "Nifty 50",
+                f"{latest_price:,.2f}",
+                f"{daily_change:.2f}%"
+            )
+
+            col_b.metric(
+                "52-Week High",
+                f"{yearly_high:,.2f}"
+            )
+
+            col_c.metric(
+                "52-Week Low",
+                f"{yearly_low:,.2f}"
+            )
+
+            col_d.metric(
+                "Trading Days",
+                len(nifty)
+            )
+
+            st.caption(
+                "Latest available data: "
+                + nifty.index[-1].strftime("%d %b %Y")
+            )
+
+        else:
+
+            st.warning("Nifty 50 data is unavailable.")
+
+    except Exception:
+
+        st.warning("Unable to load Nifty 50 data.")
+
+    # FEATURE CARDS
+
+    st.divider()
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
+
         with st.container(border=True):
             st.subheader("📊 Stock Scanner")
             st.write("Analyse multiple NSE stocks.")
             st.caption("Compare research indicators.")
 
     with col2:
+
         with st.container(border=True):
             st.subheader("📈 Technical Analysis")
             st.write("Explore SMA, RSI and momentum.")
             st.caption("Understand historical trends.")
 
     with col3:
+
         with st.container(border=True):
             st.subheader("🛡️ Risk Analysis")
             st.write("Study volatility and drawdowns.")
@@ -344,6 +405,7 @@ elif page == "Stock Scanner":
         ))
 
         if not symbols:
+
             st.error("Please enter at least one stock symbol.")
 
         else:
@@ -356,9 +418,10 @@ elif page == "Stock Scanner":
             for i, symbol in enumerate(symbols):
 
                 try:
+
                     df = get_stock_data(symbol, period)
 
-                    if df is not None:
+                    if df is not None and len(df) >= 50:
 
                         result, processed = analyse_stock(
                             symbol, df
@@ -368,11 +431,13 @@ elif page == "Stock Scanner":
                         chart_data[symbol] = processed
 
                     else:
+
                         st.warning(
                             f"Insufficient data for {symbol}"
                         )
 
                 except Exception:
+
                     st.warning(
                         f"Could not analyse {symbol}"
                     )
@@ -394,6 +459,7 @@ elif page == "Stock Scanner":
                 st.success("Analysis completed!")
 
             else:
+
                 st.error("No stock data could be analysed.")
 
     if "results" in st.session_state:
@@ -418,7 +484,7 @@ elif page == "Stock Scanner":
         )
 
         st.caption(
-            "Research scores are rule-based indicators, "
+            "Research scores are technical indicators, "
             "not predictions or buy recommendations."
         )
 
@@ -483,6 +549,7 @@ elif page == "Market Analysis":
         plt.close(fig)
 
         st.subheader("RSI History")
+
         st.line_chart(df["RSI"])
 
 # ==========================================
@@ -538,6 +605,7 @@ elif page == "Risk Analysis":
         )
 
         st.subheader("Historical Drawdown")
+
         st.line_chart(drawdown)
 
         st.caption(
