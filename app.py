@@ -71,17 +71,8 @@ h2, h3 {
 
 # MarketMind AI branding
 
-import os
-
-logo_path = os.path.join(
-    os.path.dirname(__file__),
-    "Logo.svg"
-)
-
-if os.path.exists(logo_path):
-    st.sidebar.image(logo_path, width=90)
-else:
-    st.sidebar.title("📈 MarketMind AI")
+st.sidebar.title("📈 MarketMind AI")
+st.sidebar.caption("Stock Research Platform")
 
 st.sidebar.title("MarketMind AI")
 
