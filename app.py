@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(
     page_title="MarketMind AI",
-    page_icon="📈",
+    page_icon="logo.svg",
     layout="wide"
 )
 
@@ -69,9 +69,15 @@ h2, h3 {
 # 3. SIDEBAR NAVIGATION
 # ==========================================
 
-st.sidebar.title("📈 MarketMind AI")
-st.sidebar.caption("Stock Research Platform")
+# MarketMind AI branding
 
+st.sidebar.image("logo.svg", width=90)
+
+st.sidebar.title("MarketMind AI")
+
+st.sidebar.caption(
+    "Stock Research Platform"
+)
 page = st.sidebar.radio(
     "Navigation",
     [
