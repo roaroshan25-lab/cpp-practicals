@@ -19,29 +19,51 @@ st.set_page_config(
 # 2. DESIGN
 # ==========================================
 
+
 st.markdown("""
 <style>
 .stApp {
-    background-color: #f5f7fb;
+    background-color: #f3f6fc;
 }
+
+[data-testid="stSidebar"] {
+    background-color: #10243e;
+}
+
+[data-testid="stSidebar"] * {
+    color: white;
+}
+
 .block-container {
     padding-top: 2rem;
     max-width: 1200px;
 }
+
 h1 {
     color: #12345a;
+    font-weight: 800;
 }
+
 h2, h3 {
     color: #234b70;
 }
+
 .stMetric {
     background: white;
     padding: 15px;
     border-radius: 12px;
-    border: 1px solid #e1e8f0;
+    border: 1px solid #dce5f0;
 }
+
+.stButton button {
+    background-color: #087f70;
+    color: white;
+    border-radius: 8px;
+}
+
 </style>
 """, unsafe_allow_html=True)
+
 
 # ==========================================
 # 3. SIDEBAR NAVIGATION
