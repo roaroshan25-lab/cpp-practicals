@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(
     page_title="MarketMind AI",
-    page_icon="Logo.svg",
+    page_icon="📈",
     layout="wide"
 )
 
@@ -71,7 +71,17 @@ h2, h3 {
 
 # MarketMind AI branding
 
-st.sidebar.image("Logo.svg", width=90)
+import os
+
+logo_path = os.path.join(
+    os.path.dirname(__file__),
+    "Logo.svg"
+)
+
+if os.path.exists(logo_path):
+    st.sidebar.image(logo_path, width=90)
+else:
+    st.sidebar.title("📈 MarketMind AI")
 
 st.sidebar.title("MarketMind AI")
 
