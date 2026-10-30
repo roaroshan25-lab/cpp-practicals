@@ -1,3 +1,4 @@
+
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -238,8 +239,8 @@ def format_symbol_help():
     st.caption(
         "For NSE-listed shares, use Yahoo Finance symbols such as "
         "`RELIANCE.NS`, `TCS.NS` and `INFY.NS`."
-    )
-
+)
+    
 # =========================================================
 # 7. WEBSITE HEADER
 # =========================================================
@@ -365,7 +366,7 @@ elif page == "Stock Scanner":
                 st.session_state["scanner_results"] = result_df
                 st.session_state["chart_data"] = chart_data
                 st.success(f"Completed analysis for {len(results)} stock(s).")
-                else:
+            else:
                 st.error(
                     "No stock could be analysed. Check the symbols and try again."
                 )
@@ -477,7 +478,8 @@ elif page == "Risk Analysis":
             "Drawdown measures decline from a previous peak. Neither guarantees "
             "future risk or performance."
         )
-
+        
+        
 # =========================================================
 # 12. STOCK COMPARISON
 # =========================================================
@@ -668,8 +670,9 @@ elif page == "About":
         "- **Risk Analysis:** Historical volatility and drawdown.\n"
         "- **Stock Comparison:** Normalised historical performance comparison.\n"
         "- **Watchlist:** Session-based saved stock symbols."
-                )
-                    st.subheader("How the indicators are calculated")
+    )
+
+    st.subheader("How the indicators are calculated")
     st.markdown(
         "- **SMA 20 / SMA 50:** Average closing price over 20 / 50 sessions.\n"
         "- **RSI:** Momentum indicator calculated from average gains and losses.\n"
@@ -716,5 +719,4 @@ st.divider()
 st.caption(
     "© MarketMind AI | Educational Historical Market Research | "
     "Data availability may vary."
-        )
-    
+)
