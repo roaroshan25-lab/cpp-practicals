@@ -11,15 +11,24 @@ from email.message import EmailMessage
 # ---------------- PAGE CONFIG ----------------
 
 st.set_page_config(
-    page_title="AI Stock Research Dashboard",
+    page_title="Market Mind AI",
     page_icon="📈",
     layout="wide"
 )
 
-st.title("📈 AI Stock Research Dashboard")
-st.caption(
-    "Educational stock analysis using historical market data. "
-    "Scores are research indicators, not predictions or buy recommendations."
+st.title("📈 MarketMind AI")
+
+st.subheader("Stock Research & Market Analysis")
+
+st.write(
+    "Explore historical stock prices, technical indicators, "
+    "market momentum and risk analysis in one place."
+)
+
+st.info(
+    "MarketMind AI is an educational research platform. "
+    "It does not provide guaranteed predictions or personalised "
+    "investment advice."
 )
 
 # ---------------- SIDEBAR ----------------
