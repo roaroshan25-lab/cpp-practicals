@@ -140,6 +140,20 @@ run_scan = st.sidebar.button(
     "🔍 Run Stock Analysis",
     use_container_width=True
 )
+# ---------------- NAVIGATION ----------------
+
+st.sidebar.title("MarketMind AI")
+
+page = st.sidebar.radio(
+    "Navigation",
+    [
+        "Home",
+        "Stock Scanner",
+        "Market Analysis",
+        "Risk Analysis",
+        "About"
+    ]
+)
 
 # ==================================================
 # 6. DOWNLOAD STOCK DATA
