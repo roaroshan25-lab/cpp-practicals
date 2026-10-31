@@ -1,0 +1,108 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #0b1120;
+  color: #e5e7eb;
+}
+
+header {
+  background: #111c32;
+  padding: 28px 15px;
+  text-align: center;
+}
+
+header h1 {
+  color: #38bdf8;
+  font-size: 30px;
+}
+
+header p {
+  margin-top: 8px;
+  color: #94a3b8;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  background: #17233a;
+}
+
+button {
+  background: #0284c7;
+  color: white;
+  border: none;
+  padding: 11px 16px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0369a1;
+}
+
+main {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 15px;
+}
+
+.page {
+  background: #17233a;
+  padding: 25px;
+  border-radius: 12px;
+  min-height: 250px;
+}
+
+.page h2 {
+  color: #38bdf8;
+  margin-bottom: 18px;
+}
+
+.page p {
+  margin: 12px 0;
+  line-height: 1.6;
+}
+
+input {
+  width: 100%;
+  max-width: 350px;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  background: #0b1120;
+  color: white;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #94a3b8;
+}
+
+#scannerResult,
+#compareResult {
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 24px;
+  }
+
+  nav button {
+    flex: 1 1 40%;
+  }
+
+  main {
+    margin: 15px auto;
+  }
+}
