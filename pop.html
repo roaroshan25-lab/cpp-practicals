@@ -1,1 +1,68 @@
-pop
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketMind AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>MarketMind AI</h1>
+    <p>Smart Stock Market Analysis</p>
+  </header>
+
+  <nav>
+    <button onclick="showPage('overview')">Overview</button>
+    <button onclick="showPage('scanner')">Stock Scanner</button>
+    <button onclick="showPage('analysis')">Market Analysis</button>
+    <button onclick="showPage('risk')">Risk Analysis</button>
+    <button onclick="showPage('compare')">Compare</button>
+    <button onclick="showPage('watchlist')">Watchlist</button>
+  </nav>
+
+  <main>
+    <section id="overview" class="page">
+      <h2>Market Overview</h2>
+      <p>Welcome to MarketMind AI.</p>
+      <p>Explore stock prices, historical trends and market indicators.</p>
+    </section>
+
+    <section id="scanner" class="page" hidden>
+      <h2>Stock Scanner</h2>
+      <input id="scannerSymbol" placeholder="Enter stock symbol (e.g. RELIANCE)">
+      <button onclick="getStock('scannerSymbol')">Search Stock</button>
+      <div id="scannerResult"></div>
+    </section>
+
+    <section id="analysis" class="page" hidden>
+      <h2>Market Analysis</h2>
+      <p>Explore historical stock data and technical indicators.</p>
+    </section>
+
+    <section id="risk" class="page" hidden>
+      <h2>Risk Analysis</h2>
+      <p>Understand historical price volatility and risk.</p>
+    </section>
+
+    <section id="compare" class="page" hidden>
+      <h2>Compare Stocks</h2>
+      <input id="compareSymbol" placeholder="Enter stock symbol">
+      <button onclick="getStock('compareSymbol')">Compare</button>
+      <div id="compareResult"></div>
+    </section>
+
+    <section id="watchlist" class="page" hidden>
+      <h2>My Watchlist</h2>
+      <p>Your selected stocks will appear here.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>MarketMind AI | Educational stock market analysis</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
